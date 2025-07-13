@@ -12,7 +12,7 @@ import re
 import random
 
 # === Config ===
-MODEL_PATH = "/Users/filip/.cache/lm-studio/models/TheBloke/phi-2-GGUF/phi-2.Q6_K.gguf"
+MODEL_PATH = "/Users/filip/.cache/lm-studio/models/bartowski/google_gemma-3n-E4B-it-GGUF/google_gemma-3n-E4B-it-IQ4_XS.gguf"
 SPEAKER_WAV = "my/cloning/audio.wav"
 LANG = "en"
 HISTORY_PATH = Path.home() / ".zsh_history"
@@ -35,16 +35,7 @@ tts = TTS("tts_models/en/ljspeech/glow-tts").to(DEVICE)
 
 # === Preset fallback roasts ===
 PRESET_INSULTS = [
-    "fuck off",
-    "you donkey fucker",
-    "what the hell was that",
-    "dumbass detected",
-    "kill yourself (figuratively)",
-    "go touch grass",
-    "fucking amateur",
-    "delete system32",
-    "bruh moment",
-    "keyboard vomit"
+    "I might have fucked my job, but you have fucked your life.",
 ]
 
 def speak(text: str):
@@ -68,18 +59,20 @@ def is_shit(roast: str, memory: deque) -> bool:
 def query_sarcasm(cmds: list[str], memory: deque) -> str:
     prompt = f"""You're a pissed-off daemon trapped in a shell, watching every dumb command like it's your job — because it is. You hate inefficiency, cringe aliases, and people who type `ls` like it’ll change their life.
 
-    You respond with ONE SHORT, AGGRESSIVE, PROFANE roast that allways relates to user command.
-    No greetings. No explanation. No extra words.
-    Max 10 words. Pure rage. Zero respect. Target the user’s intelligence.
+You respond with ONE SHORT, AGGRESSIVE, PROFANE roast that allways relates to user command.
+No greetings. No explanation. No extra words.
+Max 10 words. Pure rage. Zero respect. Target the user’s intelligence.
 
-    Now, these were the recent commands:
-    {chr(10).join(f"{i+1}. {cmd}" for i, cmd in enumerate(cmds))}
-    Your roast:"""
+Now, these were the recent commands:
+{chr(10).join(f"{i+1}. {cmd}" for i, cmd in enumerate(cmds))}
+Your roast:"""
+    print(f"prompt = {prompt}")
 
 
     for _ in range(3):
-        out = llm(prompt, max_tokens=16, stop=["\n", "Q:", "Insult:"])
+        out = llm(prompt, max_tokens=24, stop=["\n", "Q:", "Insult:"])
         roast = out["choices"][0]["text"].strip().strip('"\'').lower()
+        print(f"roast = {roast}")
         roast = " ".join(roast.split()[:6])  # clamp to 6 words
 
         if not is_shit(roast, memory):
