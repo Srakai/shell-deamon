@@ -32,3 +32,7 @@ Models are only suggestion, you can use any llama.cpp compatible model.
 ## ⚠️ Warning
 This project is abusive by design.
 Do not run if you're emotional to feedback.
+
+
+## License
+This project uses Coqui TTS, which is licensed under MPL-2.0.
